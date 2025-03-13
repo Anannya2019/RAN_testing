@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 0 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .load-indicator {
+            margin: 0 20px;
+            font-weight: bold;
+        }
+        
+        .animation-container {
+            position: relative;
+            height: 400px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 15px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+        
+        .gnb {
+            position: absolute;
+            width: 120px;
+            height: 80px;
+            background-color: #3f51b5;
+            right: 50px;
+            top: 50px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        .ue {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background-color: #ff9800;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.5s, opacity 0.5s;
+            z-index: 5;
+        }
+        
+        .prach-slot {
+            position: absolute;
+            height: 20px;
+            width: 100px;
+            background-color: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4CAF50;
+            left: 300px;
+            border-radius: 3px;
+        }
+        
+        .prach-msg {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background-color: #e91e63;
+            border-radius: 4px;
+            opacity: 0;
+            transition: left 1s, top 1s, opacity 0.5s;
+        }
+        
+        .rar-msg {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            background-color: #2196f3;
+            border-radius: 4px;
+            opacity: 0;
+            transition: left 1s, top 1s, opacity 0.5s;
+        }
+        
+        .collision {
+            position: absolute;
+            color: red;
+            font-weight: bold;
+            font-size: 24px;
+            opacity: 0;
+        }
+        
+        .info-panel {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>5G PRACH Transmission with Increasing Load</h1>
+        
+        <div class="controls">
+            <button id="startBtn">Start Animation</button>
+            <div class="load-indicator">Load: <span id="loadValue">Low</span></div>
+            <button id="increaseLoadBtn">Increase Load</button>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #3f51b5;"></div>
+                <span>gNB (Base Station)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ff9800;"></div>
+                <span>UE (User Equipment)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e91e63;"></div>
+                <span>PRACH Msg1</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2196f3;"></div>
+                <span>RAR Msg2</span>
+            </div>
+        </div>
+        
+        <div class="animation-container" id="animationContainer">
+            <div class="gnb">gNB</div>
+            <!-- PRACH slots will be added dynamically -->
+            <!-- UEs will be added dynamically -->
+        </div>
+        
+        <div class="info-panel">
+            <div class="info-title">PRACH Performance Metrics</div>
+            <div>Success Rate: <span id="successRate">100%</span></div>
+            <div>Collision Rate: <span id="collisionRate">0%</span></div>
+            <div>Average Access Delay: <span id="accessDelay">10ms</span></div>
+            
+            <div style="margin-top: 15px;">PRACH Resource Utilization:</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="utilizationBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const LOADS = {
+            LOW: { ueCount: 5, collisionProb: 0.1, delay: 1000 },
+            MEDIUM: { ueCount: 10, collisionProb: 0.3, delay: 800 },
+            HIGH: { ueCount: 20, collisionProb: 0.6, delay: 600 }
+        };
+        
+        let currentLoad = 'LOW';
+        let animationRunning = false;
+        let ueCounter = 0;
+        let successCount = 0;
+        let collisionCount = 0;
+        let totalAttempts = 0;
+        
+        // Get DOM elements
+        const container = document.getElementById('animationContainer');
+        const startBtn = document.getElementById('startBtn');
+        const loadValue = document.getElementById('loadValue');
+        const increaseLoadBtn = document.getElementById('increaseLoadBtn');
+        const successRateEl = document.getElementById('successRate');
+        const collisionRateEl = document.getElementById('collisionRate');
+        const accessDelayEl = document.getElementById('accessDelay');
+        const utilizationBar = document.getElementById('utilizationBar');
+        
+        // Setup event listeners
+        startBtn.addEventListener('click', toggleAnimation);
+        increaseLoadBtn.addEventListener('click', increaseLoad);
+        
+        // Create PRACH slots
+        function createPrachSlots() {
+            for (let i = 0; i < 5; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'prach-slot';
+                slot.style.top = (100 + i * 50) + 'px';
+                container.appendChild(slot);
+            }
+        }
+        
+        // Create a UE
+        function createUE() {
+            const ue = document.createElement('div');
+            ueCounter++;
+            ue.className = 'ue';
+            ue.textContent = 'UE ' + ueCounter;
+            ue.id = 'ue-' + ueCounter;
+            
+            // Random position on the left side
+            const top = 50 + Math.random() * 300;
+            ue.style.left = '50px';
+            ue.style.top = top + 'px';
+            
+            container.appendChild(ue);
+            return { id: ueCounter, element: ue, top: top };
+        }
+        
+        // Send PRACH message
+        function sendPrach(ue) {
+            const msg = document.createElement('div');
+            msg.className = 'prach-msg';
+            msg.style.left = '110px';
+            msg.style.top = ue.top + 10 + 'px';
+            container.appendChild(msg);
+            
+            // Start transmission
+            setTimeout(() => {
+                msg.style.opacity = 1;
+                msg.style.left = '300px';
+                
+                // Select a random PRACH slot
+                const slotIndex = Math.floor(Math.random() * 5);
+                const slotTop = 100 + slotIndex * 50;
+                msg.style.top = slotTop + 'px';
+                
+                totalAttempts++;
+                
+                // Check for collision
+                const collision = Math.random() < LOADS[currentLoad].collisionProb;
+                
+                if (collision) {
+                    collisionCount++;
+                    showCollision(300, slotTop);
+                    updateMetrics();
+                    
+                    // Clean up
+                    setTimeout(() => {
+                        msg.remove();
+                        startNewAttempt(ue);
+                    }, 1000);
+                } else {
+                    // Successful PRACH, send RAR
+                    successCount++;
+                    sendRAR(ue, slotTop);
+                    updateMetrics();
+                    
+                    // Clean up
+                    setTimeout(() => {
+                        msg.remove();
+                    }, 2000);
+                }
+            }, 100);
+        }
+        
+        // Send Random Access Response
+        function sendRAR(ue, slotTop) {
+            const rar = document.createElement('div');
+            rar.className = 'rar-msg';
+            rar.style.left = '400px';
+            rar.style.top = slotTop + 'px';
+            container.appendChild(rar);
+            
+            setTimeout(() => {
+                rar.style.opacity = 1;
+                rar.style.left = '110px';
+                rar.style.top = ue.top + 10 + 'px';
+                
+                // Clean up
+                setTimeout(() => {
+                    rar.remove();
+                    removeUE(ue.id);
+                    if (animationRunning) {
+                        startNewUE();
+                    }
+                }, 1500);
+            }, 500);
+        }
+        
+        // Show collision animation
+        function showCollision(x, y) {
+            const collision = document.createElement('div');
+            collision.className = 'collision';
+            collision.textContent = '✖';
+            collision.style.left = x + 'px';
+            collision.style.top = y + 'px';
+            container.appendChild(collision);
+            
+            setTimeout(() => {
+                collision.style.opacity = 1;
+                
+                setTimeout(() => {
+                    collision.style.opacity = 0;
+                    setTimeout(() => {
+                        collision.remove();
+                    }, 500);
+                }, 1000);
+            }, 100);
+        }
+        
+        // Remove UE
+        function removeUE(id) {
+            const ue = document.getElementById('ue-' + id);
+            if (ue) {
+                ue.style.opacity = 0;
+                setTimeout(() => {
+                    ue.remove();
+                }, 500);
+            }
+        }
+        
+        // Start a new attempt for a UE
+        function startNewAttempt(ue) {
+            if (animationRunning) {
+                setTimeout(() => {
+                    sendPrach(ue);
+                }, LOADS[currentLoad].delay);
+            } else {
+                removeUE(ue.id);
+            }
+        }
+        
+        // Start a new UE
+        function startNewUE() {
+            if (document.querySelectorAll('.ue').length < LOADS[currentLoad].ueCount) {
+                const ue = createUE();
+                setTimeout(() => {
+                    sendPrach(ue);
+                }, 500);
+            }
+        }
+        
+        // Toggle animation
+        function toggleAnimation() {
+            if (animationRunning) {
+                animationRunning = false;
+                startBtn.textContent = 'Start Animation';
+                clearAllUEs();
+            } else {
+                animationRunning = true;
+                startBtn.textContent = 'Stop Animation';
+                successCount = 0;
+                collisionCount = 0;
+                totalAttempts = 0;
+                updateMetrics();
+                
+                // Start initial UEs
+                const initialCount = Math.min(3, LOADS[currentLoad].ueCount);
+                for (let i = 0; i < initialCount; i++) {
+                    setTimeout(() => {
+                        startNewUE();
+                    }, i * 200);
+                }
+            }
+        }
+        
+        // Clear all UEs
+        function clearAllUEs() {
+            const ues = document.querySelectorAll('.ue');
+            ues.forEach(ue => {
+                ue.style.opacity = 0;
+                setTimeout(() => {
+                    ue.remove();
+                }, 500);
+            });
+            
+            const msgs = document.querySelectorAll('.prach-msg, .rar-msg, .collision');
+            msgs.forEach(msg => {
+                msg.remove();
+            });
+        }
+        
+        // Increase load
+        function increaseLoad() {
+            if (currentLoad === 'LOW') {
+                currentLoad = 'MEDIUM';
+                loadValue.textContent = 'Medium';
+            } else if (currentLoad === 'MEDIUM') {
+                currentLoad = 'HIGH';
+                loadValue.textContent = 'High';
+                increaseLoadBtn.disabled = true;
+            }
+            
+            updateMetrics();
+            
+            if (animationRunning) {
+                // Add more UEs if needed
+                const currentUEs = document.querySelectorAll('.ue').length;
+                const targetUEs = Math.min(currentUEs + 3, LOADS[currentLoad].ueCount);
+                
+                for (let i = currentUEs; i < targetUEs; i++) {
+                    setTimeout(() => {
+                        startNewUE();
+                    }, (i - currentUEs) * 200);
+                }
+            }
+        }
+        
+        // Update metrics
+        function updateMetrics() {
+            if (totalAttempts > 0) {
+                const successRate = Math.round((successCount / totalAttempts) * 100);
+                const collisionRate = Math.round((collisionCount / totalAttempts) * 100);
+                
+                successRateEl.textContent = successRate + '%';
+                collisionRateEl.textContent = collisionRate + '%';
+                
+                // Update access delay based on load
+                let delay;
+                if (currentLoad === 'LOW') {
+                    delay = "10-15ms";
+                } else if (currentLoad === 'MEDIUM') {
+                    delay = "15-25ms";
+                } else {
+                    delay = "25-40ms";
+                }
+                accessDelayEl.textContent = delay;
+                
+                // Update utilization bar
+                const currentUEs = document.querySelectorAll('.ue').length;
+                const utilization = Math.round((currentUEs / LOADS[currentLoad].ueCount) * 100);
+                utilizationBar.style.width = utilization + '%';
+            }
+        }
+        
+        // Initialize
+        createPrachSlots();
+    </script>
+</body>
+</html>

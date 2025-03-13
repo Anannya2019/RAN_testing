@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+    <!-- Background -->
+    <rect width="800" height="500" fill="#f8f9fa"/>
+    
+    <!-- Title -->
+    <text x="400" y="30" font-family="Arial" font-size="24" text-anchor="middle" fill="#333">5G PRACH Animation: Random Access Procedure</text>
+    
+    <!-- UE (User Equipment) -->
+    <g id="ue">
+      <rect x="100" y="100" width="60" height="100" rx="5" fill="#4285f4"/>
+      <text x="130" y="150" font-family="Arial" font-size="16" text-anchor="middle" fill="white">UE</text>
+      <circle cx="130" cy="120" r="8" fill="#fff"/>
+    </g>
+    
+    <!-- gNB (5G Base Station) -->
+    <g id="gnb">
+      <rect x="640" y="80" width="60" height="140" rx="5" fill="#34a853"/>
+      <text x="670" y="150" font-family="Arial" font-size="16" text-anchor="middle" fill="white">gNB</text>
+      <rect x="650" y="60" width="40" height="20" fill="#34a853"/>
+      <rect x="655" y="40" width="30" height="20" fill="#34a853"/>
+      <rect x="660" y="20" width="20" height="20" fill="#34a853"/>
+    </g>
+    
+    <!-- Timeline -->
+    <line x1="130" y1="220" x2="130" y2="450" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+    <line x1="670" y1="220" x2="670" y2="450" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+    
+    <!-- Step 1: PRACH Configuration -->
+    <g id="step1">
+      <line x1="670" y1="240" x2="130" y2="270" stroke="#ea4335" stroke-width="2"/>
+      <polygon points="140,270 130,270 135,265 135,275" fill="#ea4335"/>
+      <text x="400" y="250" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Step 1: System Information (SIB1) with PRACH Configuration</text>
+    </g>
+    
+    <!-- Step 2: Preamble Selection and Transmission -->
+    <g id="step2">
+      <line x1="130" y1="300" x2="670" y2="330" stroke="#fbbc05" stroke-width="2"/>
+      <polygon points="660,330 670,330 665,325 665,335" fill="#fbbc05"/>
+      <text x="400" y="310" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Step 2: PRACH Preamble Transmission (Msg1)</text>
+    </g>
+    
+    <!-- Step 3: Random Access Response -->
+    <g id="step3">
+      <line x1="670" y1="360" x2="130" y2="390" stroke="#4285f4" stroke-width="2"/>
+      <polygon points="140,390 130,390 135,385 135,395" fill="#4285f4"/>
+      <text x="400" y="370" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Step 3: Random Access Response (Msg2)</text>
+    </g>
+    
+    <!-- Step 4: Connection Request -->
+    <g id="step4">
+      <line x1="130" y1="420" x2="670" y2="450" stroke="#34a853" stroke-width="2"/>
+      <polygon points="660,450 670,450 665,445 665,455" fill="#34a853"/>
+      <text x="400" y="430" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">Step 4: RRC Connection Request (Msg3)</text>
+    </g>
+    
+    <!-- PRACH Resources Diagram -->
+    <g id="prach-resources">
+      <rect x="200" y="100" width="400" height="180" rx="5" fill="#fff" stroke="#666"/>
+      <text x="400" y="120" font-family="Arial" font-size="18" text-anchor="middle" fill="#333">PRACH Resource Structure</text>
+      
+      <!-- Time-Frequency Grid -->
+      <g id="grid">
+        <rect x="250" y="140" width="300" height="120" fill="#f1f3f4" stroke="#666"/>
+        
+        <!-- Vertical Lines (Time) -->
+        <line x1="300" y1="140" x2="300" y2="260" stroke="#999" stroke-width="1"/>
+        <line x1="350" y1="140" x2="350" y2="260" stroke="#999" stroke-width="1"/>
+        <line x1="400" y1="140" x2="400" y2="260" stroke="#999" stroke-width="1"/>
+        <line x1="450" y1="140" x2="450" y2="260" stroke="#999" stroke-width="1"/>
+        <line x1="500" y1="140" x2="500" y2="260" stroke="#999" stroke-width="1"/>
+        
+        <!-- Horizontal Lines (Frequency) -->
+        <line x1="250" y1="170" x2="550" y2="170" stroke="#999" stroke-width="1"/>
+        <line x1="250" y1="200" x2="550" y2="200" stroke="#999" stroke-width="1"/>
+        <line x1="250" y1="230" x2="550" y2="230" stroke="#999" stroke-width="1"/>
+        
+        <!-- PRACH Allocation -->
+        <rect x="300" y="170" width="100" height="30" fill="#fbbc05" fill-opacity="0.7" stroke="#fbbc05"/>
+        <text x="350" y="190" font-family="Arial" font-size="12" text-anchor="middle" fill="#333">PRACH Slot</text>
+        
+        <!-- Preamble -->
+        <rect id="preamble" x="320" y="180" width="10" height="10" fill="#ea4335">
+          <animate attributeName="x" from="130" to="670" dur="3s" begin="2s" fill="freeze" repeatCount="1"/>
+          <animate attributeName="opacity" values="1;0;1;0;1" dur="1s" begin="2s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+      
+      <!-- Labels -->
+      <text x="400" y="130" font-family="Arial" font-size="12" text-anchor="middle" fill="#666">Time-Frequency Resource Grid</text>
+      <text x="220" y="200" font-family="Arial" font-size="12" text-anchor="end" fill="#666">Frequency</text>
+      <text x="400" y="275" font-family="Arial" font-size="12" text-anchor="middle" fill="#666">Time</text>
+    </g>
+    
+    <!-- Legend -->
+    <g id="legend">
+      <rect x="600" y="460" width="180" height="30" rx="5" fill="#fff" stroke="#666"/>
+      <circle cx="615" y="475" r="5" fill="#ea4335"/>
+      <text x="625" y="480" font-family="Arial" font-size="12" fill="#333">PRACH Preamble</text>
+    </g>
+  </svg>
